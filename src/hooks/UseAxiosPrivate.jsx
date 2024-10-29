@@ -1,12 +1,15 @@
-import React from 'react';
 import { privateAxios } from '../config/axiosconfig';
 import { useEffect } from 'react';
+import useRefreshTokens from './useRefreshTokens';
+import { useSelector } from 'react-redux';
 const UseAxiosPrivate = () => {
+  const token = useSelector((state) => state.aTokens.token);
+  const refresh = useRefreshTokens();
   useEffect(() => {
     const requestIntercept = privateAxios.interceptors.request.use(
       (config) => {
         if (!config.headers['Authorization']) {
-          config.headers['Authorization'] = `Bearer ${auth?.accessToken}`;
+          config.headers['Authorization'] = `Bearer ${token}`;
         }
         return config;
       },
@@ -29,7 +32,7 @@ const UseAxiosPrivate = () => {
       privateAxios.interceptors.request.eject(requestIntercept);
       privateAxios.interceptors.response.eject(responseIntercept);
     };
-  }, [auth, refresh]);
+  }, [token, refresh]);
   return privateAxios;
 };
 

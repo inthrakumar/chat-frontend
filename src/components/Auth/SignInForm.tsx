@@ -6,6 +6,7 @@ import { z } from "zod"
 import { MoveRight } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
+import { defAxios } from "@/config/axiosconfig"
 import {
     Form,
     FormControl,
@@ -16,6 +17,8 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { useState } from "react"
+import { AxiosError } from "axios"
 
 
 const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
@@ -29,9 +32,28 @@ const formSchema = z.object({
 });
 
 export function SignInForm() {
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    async function onSubmit(values: z.infer<typeof formSchema>) {
 
-        console.log(values)
+        try {
+            const response = await defAxios.postForm('/auth/login', {
+                identifier: values.identifier,
+                password: values.password,
+            })
+
+
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                setError(error.response?.data?.message || "An error occurred");
+            } else {
+                setError("An unexpected error occurred");
+            }
+
+        } finally {
+            setIsLoading(false);
+        }
+
     }
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -75,6 +97,7 @@ export function SignInForm() {
                             </FormItem>
                         )}
                     />
+                    {error && <p className="form-message">{error}</p>}
 
                     <div className="w-full flex items-center justify-center">
                         <Button type="submit" className="group">

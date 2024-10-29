@@ -11,22 +11,24 @@ import { ThemeProvider } from './providers/ThemeProvider';
 import Auth from './pages/Auth';
 import { store } from './store/store';
 import { Provider } from 'react-redux';
+import AccessTokenProvider from './providers/AccessTokenPersistProvider';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
-      <Route
-        index
-        element={
-          <Home />
+      <Route element={<AccessTokenProvider />}>
+        <Route
+          index
+          element={
+            <Home />
 
-        }
-      />
-      <Route
-        path="/authentication"
-        element={
-          <Auth />
-        }
-      />
+          }
+        />
+        <Route
+          path="/authentication"
+          element={
+            <Auth />
+          }
+        /></Route>
     </Route>))
 const App = () => {
   return (

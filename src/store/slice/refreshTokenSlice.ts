@@ -3,10 +3,12 @@ import type { RootState } from '../store';
 
 interface RefreshStore {
   token: string | null;
+  persist: boolean;
 }
 
 const initialState: RefreshStore = {
   token: null,
+  persist: false,
 };
 
 export const accessTokenStore = createSlice({

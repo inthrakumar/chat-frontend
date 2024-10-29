@@ -51,16 +51,13 @@ export function SignUpForm() {
                 email: values.email,
                 password: values.password,
             })
-            console.log(response.data);
-            console.log("User created successfully")
         } catch (error) {
             if (error instanceof AxiosError) {
                 setError(error.response?.data?.message || "An error occurred");
             } else {
                 setError("An unexpected error occurred");
             }
-            console.log(error);
-            console.log(error);
+
         } finally {
             setIsLoading(false);
         }
@@ -134,6 +131,8 @@ export function SignUpForm() {
                             </FormItem>
                         )}
                     />
+                    {error && <p className="form-message">{error}</p>}
+
                     <div className="w-full flex items-center justify-center">
                         <Button type="submit" className="group" disabled={isLoading}>
                             {
