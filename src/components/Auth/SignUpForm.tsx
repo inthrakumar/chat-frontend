@@ -3,8 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-
+import { defAxios } from '../../config/axiosconfig'
 import { Button } from "@/components/ui/button"
+import { AxiosError } from "axios"
 import {
     Form,
     FormControl,
@@ -16,6 +17,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { MoveRight } from "lucide-react"
+import { useState } from 'react';
 
 
 const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
@@ -36,9 +38,32 @@ const formSchema = z.object({
 });
 
 export function SignUpForm() {
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-        console.log(values)
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+
+        try {
+            setIsLoading(true);
+            setError(null);
+            const response = await defAxios.post('/auth/local/signup', {
+                username: values.username,
+                email: values.email,
+                password: values.password,
+            })
+            console.log(response.data);
+            console.log("User created successfully")
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                setError(error.response?.data?.message || "An error occurred");
+            } else {
+                setError("An unexpected error occurred");
+            }
+            console.log(error);
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+        }
     }
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -110,8 +135,10 @@ export function SignUpForm() {
                         )}
                     />
                     <div className="w-full flex items-center justify-center">
-                        <Button type="submit" className="group">
-                            Create Account
+                        <Button type="submit" className="group" disabled={isLoading}>
+                            {
+                                isLoading ? "Creating..." : "Create"
+                            }
                             <span className="hidden group-hover:inline">
                                 <MoveRight />
                             </span>

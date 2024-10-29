@@ -9,6 +9,8 @@ import Layout from './components/Layout/Layout';
 import Home from './pages/Home'
 import { ThemeProvider } from './providers/ThemeProvider';
 import Auth from './pages/Auth';
+import { store } from './store/store';
+import { Provider } from 'react-redux';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
@@ -28,9 +30,11 @@ const router = createBrowserRouter(
     </Route>))
 const App = () => {
   return (
-    <ThemeProvider defaultTheme='light' storageKey='color-theme'>
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider defaultTheme='light' storageKey='color-theme'>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </Provider>
   )
 }
 
