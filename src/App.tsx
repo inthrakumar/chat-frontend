@@ -8,6 +8,7 @@ import {
 import Layout from './components/Layout/Layout';
 import Home from './pages/Home'
 import { ThemeProvider } from './providers/ThemeProvider';
+import Auth from './pages/Auth';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
@@ -16,6 +17,12 @@ const router = createBrowserRouter(
         element={
           <Home />
 
+        }
+      />
+      <Route
+        path="/authentication"
+        element={
+          <Auth />
         }
       />
     </Route>))
