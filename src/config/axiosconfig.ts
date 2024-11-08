@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const defAxios = axios.create({
   baseURL: 'http://localhost:3000',
-  withCredentials: true,
 });
 
 const privateAxios = axios.create({

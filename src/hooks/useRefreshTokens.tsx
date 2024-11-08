@@ -10,7 +10,6 @@ const useRefreshTokens = () => {
             withCredentials: true
         });
         dispatch(updateToken(response.data.accessToken));
-
         return response.data.accessToken;
     }
     return refresh;

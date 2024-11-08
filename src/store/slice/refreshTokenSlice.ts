@@ -17,6 +17,7 @@ export const accessTokenStore = createSlice({
   reducers: {
     updateToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload;
+      state.persist = true;
     },
   },
 });

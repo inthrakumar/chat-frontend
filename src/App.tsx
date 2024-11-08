@@ -15,6 +15,12 @@ import AccessTokenProvider from './providers/AccessTokenPersistProvider';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
+      <Route
+        path="/authentication"
+        element={
+          <Auth />
+        }
+      />
       <Route element={<AccessTokenProvider />}>
         <Route
           index
@@ -23,12 +29,7 @@ const router = createBrowserRouter(
 
           }
         />
-        <Route
-          path="/authentication"
-          element={
-            <Auth />
-          }
-        /></Route>
+      </Route>
     </Route>))
 const App = () => {
   return (

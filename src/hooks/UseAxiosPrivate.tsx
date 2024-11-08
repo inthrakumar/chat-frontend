@@ -1,14 +1,18 @@
 import { privateAxios } from '../config/axiosconfig';
 import { useEffect } from 'react';
 import useRefreshTokens from './useRefreshTokens';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '@/store/store';
+import { updateToken } from '@/store/slice/refreshTokenSlice';
 const UseAxiosPrivate = () => {
-  const token = useSelector((state) => state.aTokens.token);
+  const dispatch = useDispatch();
+  const token = useSelector((state: RootState) => state.aTokens.token);
   const refresh = useRefreshTokens();
   useEffect(() => {
     const requestIntercept = privateAxios.interceptors.request.use(
       (config) => {
-        if (!config.headers['Authorization']) {
+
+        if (!config.headers['Authorization'] && token) {
           config.headers['Authorization'] = `Bearer ${token}`;
         }
         return config;
@@ -19,9 +23,11 @@ const UseAxiosPrivate = () => {
       (response) => response,
       async (error) => {
         const prevRequest = error?.config;
-        if (error?.response?.status === 403 && !prevRequest?.sent) {
+        console.log(error);
+        if (error?.response?.status === 401 && !prevRequest?.sent) {
           prevRequest.sent = true;
           const newAccessToken = await refresh();
+          dispatch(updateToken(newAccessToken));
           prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
           return privateAxios(prevRequest);
         }
