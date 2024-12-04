@@ -4,11 +4,14 @@ import useRefreshTokens from './useRefreshTokens';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
 import { updateToken } from '@/store/slice/refreshTokenSlice';
+import { useNavigate } from 'react-router-dom';
 const UseAxiosPrivate = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = useSelector((state: RootState) => state.aTokens.token);
   const refresh = useRefreshTokens();
   useEffect(() => {
+
     const requestIntercept = privateAxios.interceptors.request.use(
       (config) => {
 
@@ -27,6 +30,7 @@ const UseAxiosPrivate = () => {
         if (error?.response?.status === 401 && !prevRequest?.sent) {
           prevRequest.sent = true;
           const newAccessToken = await refresh();
+          if (!newAccessToken) navigate('/authentication');
           dispatch(updateToken(newAccessToken));
           prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
           return privateAxios(prevRequest);

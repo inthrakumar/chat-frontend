@@ -6,11 +6,16 @@ const useRefreshTokens = () => {
     const dispatch = useDispatch();
 
     const refresh = async () => {
-        const response = await defAxios.get('/auth/refresh', {
-            withCredentials: true
-        });
-        dispatch(updateToken(response.data.accessToken));
-        return response.data.accessToken;
+        try {
+            const response = await defAxios.get('/auth/refresh', {
+                withCredentials: true
+            });
+            dispatch(updateToken(response.data.accessToken));
+            return response.data.accessToken;
+        } catch (error) {
+            return null;
+
+        }
     }
     return refresh;
 }
