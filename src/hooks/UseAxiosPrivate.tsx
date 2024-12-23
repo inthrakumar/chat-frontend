@@ -31,6 +31,7 @@ const UseAxiosPrivate = () => {
           prevRequest.sent = true;
           const newAccessToken = await refresh();
           if (!newAccessToken) navigate('/authentication');
+                sessionStorage.setItem('at',newAccessToken);
           dispatch(updateToken(newAccessToken));
           prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
           return privateAxios(prevRequest);
